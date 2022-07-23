@@ -117,7 +117,7 @@ function moveCardWhenIssueMilestoned(apiKey, apiToken, boardId) {
   const departureListId = process.env['TRELLO_DEPARTURE_LIST_ID'];
   const destinationListId = process.env['TRELLO_DESTINATION_LIST_ID'];
   const issue = github.context.payload.issue
-  const issue_number = issue.number
+  const issue_number = issue.number;
   const url = pullRequest.html_url;
   const reviewers = pullRequest.requested_reviewers.map(reviewer => reviewer.login);
 
