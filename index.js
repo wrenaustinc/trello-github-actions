@@ -18,7 +18,9 @@ try {
     case 'move_card_when_pull_request_closed':
       moveCardWhenPullRequestClose(apiKey, apiToken, boardId);
       break;
-
+    case 'move_card_when_issue_milestoned':
+      moveCardWhenIssueMilestoned(apiKey, apiToken, boardId);
+      break;
   }
 } catch (error) {
   core.setFailed(error.message);
@@ -111,7 +113,51 @@ function moveCardWhenPullRequestOpen(apiKey, apiToken, boardId) {
     });
   });
 }
+function moveCardWhenIssueMilestoned(apiKey, apiToken, boardId) {
+  const departureListId = process.env['TRELLO_DEPARTURE_LIST_ID'];
+  const destinationListId = process.env['TRELLO_DESTINATION_LIST_ID'];
+  const pullRequest = github.context.payload.issue
+  const issue_number = pullRequest.body.match(/#[0-9]+/)[0].slice(1);
+  const url = pullRequest.html_url;
+  const reviewers = pullRequest.requested_reviewers.map(reviewer => reviewer.login);
 
+  getMembersOfBoard(apiKey, apiToken, boardId).then(function(response) {
+    const members = response;
+    const additionalMemberIds = [];
+    reviewers.forEach(function(reviewer) {
+      members.forEach(function(member) {
+        if (member.username == reviewer) {
+          additionalMemberIds.push(member.id);
+        }
+      });
+    });
+
+    getCardsOfList(apiKey, apiToken, departureListId).then(function(response) {
+      const cards = response;
+      let cardId;
+      let existingMemberIds = [];
+      cards.some(function(card) {
+        const card_issue_number = card.name.match(/#[0-9]+/)[0].slice(1);
+        if (card_issue_number == issue_number) {
+          cardId = card.id;
+          existingMemberIds = card.idMembers;
+          return true;
+        }
+      });
+      const cardParams = {
+        destinationListId: destinationListId, memberIds: existingMemberIds.concat(additionalMemberIds).join()
+      }
+
+      if (cardId) {
+        putCard(apiKey, apiToken, cardId, cardParams).then(function(response) {
+          addUrlSourceToCard(apiKey, apiToken, cardId, url);
+        });
+      } else {
+        core.setFailed('Card not found.');
+      }
+    });
+  });
+}
 function moveCardWhenPullRequestClose(apiKey, apiToken, boardId) {
   const departureListId = process.env['TRELLO_DEPARTURE_LIST_ID'];
   const destinationListId = process.env['TRELLO_DESTINATION_LIST_ID'];
