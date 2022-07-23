@@ -119,7 +119,7 @@ function moveCardWhenIssueMilestoned(apiKey, apiToken, boardId) {
   const pullRequest = github.context.payload.issue
   const issue_number = pullRequest.number;
   const url = pullRequest.html_url;
-  const reviewers = pullRequest.requested_reviewers.map(reviewer => reviewer.login);
+  const reviewers = pullRequest.assignees.map(assignee => assignee.login);
 
   getMembersOfBoard(apiKey, apiToken, boardId).then(function(response) {
     const members = response;
