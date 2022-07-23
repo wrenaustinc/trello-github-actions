@@ -116,10 +116,10 @@ function moveCardWhenPullRequestOpen(apiKey, apiToken, boardId) {
 function moveCardWhenIssueMilestoned(apiKey, apiToken, boardId) {
   const departureListId = process.env['TRELLO_DEPARTURE_LIST_ID'];
   const destinationListId = process.env['TRELLO_DESTINATION_LIST_ID'];
-  const pullRequest = github.context.payload.issue
-  const issue_number = pullRequest.number;
-  const url = pullRequest.html_url;
-  const reviewers = pullRequest.assignees.map(assignee => assignee.login);
+  const issue = github.context.payload.issue
+  const issue_number = issue.number;
+  const url = issue.html_url;
+  const reviewers = issue.assignees.map(assignee => assignee.login);
 
   getMembersOfBoard(apiKey, apiToken, boardId).then(function(response) {
     const members = response;
