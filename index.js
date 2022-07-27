@@ -113,6 +113,58 @@ function moveCardWhenPullRequestOpen(apiKey, apiToken, boardId) {
     });
   });
 }
+function moveCardWhenIssueBranched(apiKey, apiToken, boardId) {
+  const departureListId = process.env['TRELLO_DEPARTURE_LIST_ID'];
+  const destinationListId = process.env['TRELLO_DESTINATION_LIST_ID'];
+ 
+         
+            const ref = github.context.ref;
+            const branch = extractBranchNameFromRef(ref);
+            if (isTag(ref)) {
+               core.setFailed('payload is tag');
+            }     
+               
+            
+  
+  const issue_number = extractIssueNumberfromBranch(branch);
+  const url =  github.context.html_url;
+ // const reviewers = issue.assignees.map(assignee => assignee.login);
+
+
+    getCardsOfList(apiKey, apiToken, departureListId).then(function(response) {
+      const cards = response;
+      let cardId;
+      let existingMemberIds = [];
+      cards.some(function(card) {
+        const card_issue_number = card.name.match(/#[0-9]+/)[0].slice(1);
+        if (card_issue_number == issue_number) {
+          cardId = card.id;
+          existingMemberIds = card.idMembers;
+          return true;
+        }
+      });
+      const cardParams = {
+        destinationListId: destinationListId, memberIds: existingMemberIds.concat(additionalMemberIds).join()
+      }
+
+      if (cardId) {
+        putCard(apiKey, apiToken, cardId, cardParams).then(function(response) {
+          addUrlSourceToCard(apiKey, apiToken, cardId, url);
+        });
+      } else {
+        core.setFailed('Card not found.');
+      }
+    });
+  });
+}
+
+function isTag(ref: string): boolean { return ref.startsWith(TAG_REF) }
+function extractBranchNameFromRef(ref: string): string {
+    return ref.substr(ref.lastIndexOf('/') + 1);
+}
+function extractIssueNumberfromBranch(branch: string): string {
+    return branch.substr(0,branch.Indexof('-'));
+}
 function moveCardWhenIssueMilestoned(apiKey, apiToken, boardId) {
   const departureListId = process.env['TRELLO_DEPARTURE_LIST_ID'];
   const destinationListId = process.env['TRELLO_DESTINATION_LIST_ID'];
