@@ -161,11 +161,11 @@ function moveCardWhenIssueBranched(apiKey, apiToken, boardId) {
 
 }
 
-function isTag(ref: string): boolean { return ref.startsWith(TAG_REF) }
-function extractBranchNameFromRef(ref: string): string {
+function isTag(ref): boolean { return ref.startsWith(TAG_REF) }
+function extractBranchNameFromRef(ref): string {
     return ref.substr(ref.lastIndexOf('/') + 1);
 }
-function extractIssueNumberfromBranch(branch: string): string {
+function extractIssueNumberfromBranch(branch): string {
     return branch.substr(0,branch.Indexof('-'));
 }
 function moveCardWhenIssueMilestoned(apiKey, apiToken, boardId) {
