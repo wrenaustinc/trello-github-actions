@@ -21,6 +21,9 @@ try {
     case 'move_card_when_issue_milestoned':
       moveCardWhenIssueMilestoned(apiKey, apiToken, boardId);
       break;
+    case 'move_card_when_issue_branched':
+      moveCardWhenIssueBranched(apiKey, apiToken, boardId);
+      break;
   }
 } catch (error) {
   core.setFailed(error.message);
