@@ -158,7 +158,7 @@ function moveCardWhenIssueBranched(apiKey, apiToken, boardId) {
         core.setFailed('Card not found.');
       }
     });
-  });
+
 }
 
 function isTag(ref: string): boolean { return ref.startsWith(TAG_REF) }
