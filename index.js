@@ -132,7 +132,15 @@ function moveCardWhenIssueBranched(apiKey, apiToken, boardId) {
   const issue_number = extractIssueNumberfromBranch(branch);
   const url =  github.context.html_url;
  // const reviewers = issue.assignees.map(assignee => assignee.login);
-
+  getMembersOfBoard(apiKey, apiToken, boardId).then(function(response) {
+    const members = response;
+    const additionalMemberIds = [];   
+      members.forEach(function(member) {
+        if (member.username == reviewer) {
+          additionalMemberIds.push(member.id);
+        }
+      });
+   
 
     getCardsOfList(apiKey, apiToken, departureListId).then(function(response) {
       const cards = response;
@@ -158,7 +166,7 @@ function moveCardWhenIssueBranched(apiKey, apiToken, boardId) {
         core.setFailed('Card not found.');
       }
     });
-
+});
 }
 
 function isTag(ref) { return ref.startsWith('refs/tags/'); }
