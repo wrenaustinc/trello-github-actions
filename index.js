@@ -160,8 +160,8 @@ function moveCardWhenIssueBranched(apiKey, apiToken, boardId) {
     });
 
 }
-const TAG_REF = 'refs/tags/';
-function isTag(ref) { return ref.startsWith(TAG_REF) }
+
+function isTag(ref) { return ref.startsWith('refs/tags/'); }
 function extractBranchNameFromRef(ref) {
     return ref.substr(ref.lastIndexOf('/') + 1);
 }
