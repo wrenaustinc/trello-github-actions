@@ -166,7 +166,7 @@ function extractBranchNameFromRef(ref) {
     return ref.substr(ref.lastIndexOf('/') + 1);
 }
 function extractIssueNumberfromBranch(branch) {
-    return branch.substr(0,branch.Indexof('-'));
+    return branch.substr(0,branch.indexOf('-'));
 }
 function moveCardWhenIssueMilestoned(apiKey, apiToken, boardId) {
   const departureListId = process.env['TRELLO_DEPARTURE_LIST_ID'];
