@@ -136,9 +136,9 @@ function moveCardWhenIssueBranched(apiKey, apiToken, boardId) {
     const members = response;
     const additionalMemberIds = [];   
       members.forEach(function(member) {
-        if (member.username == reviewer) {
+      
           additionalMemberIds.push(member.id);
-        }
+        
       });
    
 
